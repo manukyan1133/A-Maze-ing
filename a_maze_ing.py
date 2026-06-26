@@ -3,30 +3,43 @@ from config import parse
 from maze import MazeGenerator
 from display import display_maze
 from output import write_output
-from pathfinder import find_path  # Import the pathfinder here
+from pathfinder import find_path
 
 
 def main() -> None:
-    """Main entry point for the maze generator."""
     if len(sys.argv) != 2:
         print("Usage: python3 a_maze_ing.py config.txt")
         sys.exit(1)
 
     config = parse(sys.argv[1])
 
+    maze_seed = config.get('SEED', None)
+    if maze_seed is not None:
+        try:
+            maze_seed = int(maze_seed)
+        except ValueError:
+            maze_seed = None
+
+    animate_bonus = config.get('ANIMATE', False)
+    if isinstance(animate_bonus, str):
+        animate_bonus = animate_bonus.lower() == 'true'
+
+    algo = config.get('ALGORITHM', 'dfs')
+
     maze = MazeGenerator(
         width=config['WIDTH'],
         height=config['HEIGHT'],
         entry=config['ENTRY'],
         exit=config['EXIT'],
-        perfect=config['PERFECT']
-    ).generate()
+        perfect=config['PERFECT'],
+        seed=maze_seed
+    )
+    
+    maze.generate(algorithm=algo, animate=animate_bonus)
 
-    # Calculate the path BEFORE displaying the maze
     path = find_path(maze)
     path_string = "".join(path)
 
-    # Pass the path string to the display function
     display_maze(maze, path_steps=path_string)
 
     write_output(maze, config['OUTPUT_FILE'])

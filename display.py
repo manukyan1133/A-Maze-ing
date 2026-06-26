@@ -1,7 +1,7 @@
 from maze import MazeGenerator
+from typing import Any
 
-
-def display_maze(maze: MazeGenerator, path_steps: str = "") -> None:
+def display_maze(maze: Any, path_steps: str = "") -> None:
     """Display the maze as ASCII art in the terminal."""
 
     # 1. Trace the path coordinates from the solution string
@@ -26,7 +26,8 @@ def display_maze(maze: MazeGenerator, path_steps: str = "") -> None:
     PATH = "\033[43;5;196m  \033[0m"
     START = "\033[48;5;46m  \033[0m"    # Green
     END = "\033[48;5;21m  \033[0m"     # Blue
-
+    PATTERN_42_COLOR = "\033[48;5;24m  \033[0m"
+    
     # 2. Build a full block matrix (size multiplied to handle walls as blocks)
     render_w = maze.width * 2 + 1
     render_h = maze.height * 2 + 1
@@ -35,24 +36,41 @@ def display_maze(maze: MazeGenerator, path_steps: str = "") -> None:
     # 3. Fill in open passages and pathways
     for y in range(maze.height):
         for x in range(maze.width):
-            # Translate logic positions to block matrix positions
             bx = x * 2 + 1
             by = y * 2 + 1
 
-            # Open up the core cell space
-            display_grid[by][bx] = SPACE
+            if hasattr(maze, 'is_pattern_42') and maze.is_pattern_42(x, y):
+                display_grid[by][bx] = PATTERN_42_COLOR
+            else:
+                display_grid[by][bx] = SPACE
 
-            # Open North/South connections if walls are down
+            # Open North connections and color them if within "42"
             if not maze.grid[y][x]['N'] and y > 0:
-                display_grid[by - 1][bx] = SPACE
+                if hasattr(maze, 'is_pattern_42') and maze.is_pattern_42(x, y) and maze.is_pattern_42(x, y - 1):
+                    display_grid[by - 1][bx] = PATTERN_42_COLOR
+                else:
+                    display_grid[by - 1][bx] = SPACE
+                    
+            # Open South connections and color them if within "42"
             if not maze.grid[y][x]['S'] and y < maze.height - 1:
-                display_grid[by + 1][bx] = SPACE
-            # Open East/West connections if walls are down
-            if not maze.grid[y][x]['W'] and x > 0:
-                display_grid[by][bx - 1] = SPACE
-            if not maze.grid[y][x]['E'] and x < maze.width - 1:
-                display_grid[by][bx + 1] = SPACE
+                if hasattr(maze, 'is_pattern_42') and maze.is_pattern_42(x, y) and maze.is_pattern_42(x, y + 1):
+                    display_grid[by + 1][bx] = PATTERN_42_COLOR
+                else:
+                    display_grid[by + 1][bx] = SPACE
 
+            # Open West connections and color them if within "42"
+            if not maze.grid[y][x]['W'] and x > 0:
+                if hasattr(maze, 'is_pattern_42') and maze.is_pattern_42(x, y) and maze.is_pattern_42(x - 1, y):
+                    display_grid[by][bx - 1] = PATTERN_42_COLOR
+                else:
+                    display_grid[by][bx - 1] = SPACE
+                    
+            # Open East connections and color them if within "42"
+            if not maze.grid[y][x]['E'] and x < maze.width - 1:
+                if hasattr(maze, 'is_pattern_42') and maze.is_pattern_42(x, y) and maze.is_pattern_42(x + 1, y):
+                    display_grid[by][bx + 1] = PATTERN_42_COLOR
+                else:
+                    display_grid[by][bx + 1] = SPACE
     # 4. Insert Entry/Exit holes in outer borders
     ex, ey = maze.entry
     display_grid[ey * 2 + 1][ex * 2 + 1] = START
