@@ -2,6 +2,7 @@ import os
 import time
 import random
 from typing import List, Dict, Tuple
+from display import display_maze
 
 
 class MazeGenerator:
@@ -107,8 +108,7 @@ class MazeGenerator:
 
                 if animate:
                     os.system('cls' if os.name == 'nt' else 'clear')
-                    from display import display_maze
-                    print("--- Genering Maze (Bonus Animation) ---")
+                    print("--- Generating Maze (Bonus Animation) ---")
                     display_maze(self)
                     time.sleep(0.05)
 
