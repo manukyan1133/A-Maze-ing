@@ -34,7 +34,7 @@ def main() -> None:
         perfect=config['PERFECT'],
         seed=maze_seed
     )
-    
+
     maze.generate(algorithm=algo, animate=animate_bonus)
 
     path = find_path(maze)

@@ -1,5 +1,6 @@
-from maze import MazeGenerator
+# from maze import MazeGenerator
 from typing import Any
+
 
 def display_maze(maze: Any, path_steps: str = "") -> None:
     """Display the maze as ASCII art in the terminal."""
@@ -27,7 +28,7 @@ def display_maze(maze: Any, path_steps: str = "") -> None:
     START = "\033[48;5;46m  \033[0m"    # Green
     END = "\033[48;5;21m  \033[0m"     # Blue
     PATTERN_42_COLOR = "\033[48;5;24m  \033[0m"
-    
+
     # 2. Build a full block matrix (size multiplied to handle walls as blocks)
     render_w = maze.width * 2 + 1
     render_h = maze.height * 2 + 1
@@ -46,28 +47,42 @@ def display_maze(maze: Any, path_steps: str = "") -> None:
 
             # Open North connections and color them if within "42"
             if not maze.grid[y][x]['N'] and y > 0:
-                if hasattr(maze, 'is_pattern_42') and maze.is_pattern_42(x, y) and maze.is_pattern_42(x, y - 1):
+                if (
+                    hasattr(maze, 'is_pattern_42')
+                    and maze.is_pattern_42(x, y)
+                    and maze.is_pattern_42(x, y - 1)
+                ):
                     display_grid[by - 1][bx] = PATTERN_42_COLOR
                 else:
                     display_grid[by - 1][bx] = SPACE
-                    
+
             # Open South connections and color them if within "42"
             if not maze.grid[y][x]['S'] and y < maze.height - 1:
-                if hasattr(maze, 'is_pattern_42') and maze.is_pattern_42(x, y) and maze.is_pattern_42(x, y + 1):
+                if (
+                    hasattr(maze, 'is_pattern_42')
+                    and maze.is_pattern_42(x, y)
+                    and maze.is_pattern_42(x, y + 1)
+                ):
                     display_grid[by + 1][bx] = PATTERN_42_COLOR
                 else:
                     display_grid[by + 1][bx] = SPACE
 
             # Open West connections and color them if within "42"
             if not maze.grid[y][x]['W'] and x > 0:
-                if hasattr(maze, 'is_pattern_42') and maze.is_pattern_42(x, y) and maze.is_pattern_42(x - 1, y):
+                if (
+                    hasattr(maze, 'is_pattern_42')
+                    and maze.is_pattern_42(x, y)
+                    and maze.is_pattern_42(x - 1, y)
+                ):
                     display_grid[by][bx - 1] = PATTERN_42_COLOR
                 else:
                     display_grid[by][bx - 1] = SPACE
-                    
+
             # Open East connections and color them if within "42"
             if not maze.grid[y][x]['E'] and x < maze.width - 1:
-                if hasattr(maze, 'is_pattern_42') and maze.is_pattern_42(x, y) and maze.is_pattern_42(x + 1, y):
+                if (hasattr(maze, 'is_pattern_42')
+                    and maze.is_pattern_42(x, y)
+                        and maze.is_pattern_42(x + 1, y)):
                     display_grid[by][bx + 1] = PATTERN_42_COLOR
                 else:
                     display_grid[by][bx + 1] = SPACE
