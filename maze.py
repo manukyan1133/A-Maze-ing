@@ -162,6 +162,9 @@ class MazeGenerator:
     def generate(self, algorithm: str = "dfs",
                  animate: bool = False) -> 'MazeGenerator':
         """Generate the maze using the selected algorithm."""
+
+        self.grid = self._init_grid()
+
         algorithm = algorithm.lower()
 
         if algorithm == "prim":

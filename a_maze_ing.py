@@ -35,12 +35,46 @@ def main() -> None:
         seed=maze_seed
     )
 
-    maze.generate(algorithm=algo, animate=animate_bonus)
+    maze.generate(algorithm=algo, animate=False)
 
     path = find_path(maze)
     path_string = "".join(path)
 
-    display_maze(maze, path_steps=path_string)
+    show_path = True
+
+    while True:
+        display_maze(maze, path_string, show_path)
+
+        print("\nCommands:")
+        print("r - regenerate maze")
+        print("p - show/hide shortest path")
+        print("b - animate generation (bonus)")
+        print("c - change wall colours")
+        print("q - quit")
+
+        choice = input("Choice: ").lower()
+
+        if choice == "q":
+            break
+
+        elif choice == "p":
+            show_path = not show_path
+
+        elif choice == "r":
+            maze.generate(algorithm=algo, animate=False)
+            path = find_path(maze)
+            path_string = "".join(path)
+
+        elif choice == "b":
+            print("\nAnimating maze generation...")
+            maze.generate(algorithm=algo, animate=True)
+            path = find_path(maze)
+            path_string = "".join(path)
+
+        elif choice == "c":
+            from display import generate_palette
+            import display
+            display.PALETTE = generate_palette()
 
     write_output(maze, config['OUTPUT_FILE'])
     print(f"\nMaze written to {config['OUTPUT_FILE']}")

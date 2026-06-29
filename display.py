@@ -67,13 +67,17 @@ def generate_palette() -> dict[str, str]:
 PALETTE = generate_palette()
 
 
-def display_maze(maze: "MazeGenerator", path_steps: str = "") -> None:
+def display_maze(
+    maze: "MazeGenerator",
+    path_steps: str = "",
+    show_path: bool = True
+) -> None:
     """Display the maze as ASCII art in the terminal."""
 
     # 1. Trace the path coordinates from the solution string
     palette = PALETTE
     path_cells = set()
-    if path_steps:
+    if show_path and path_steps:
         curr_x, curr_y = maze.entry
         path_cells.add((curr_x, curr_y))
         for move in path_steps:
@@ -165,7 +169,7 @@ def display_maze(maze: "MazeGenerator", path_steps: str = "") -> None:
         display_grid[render_h - 1][xx * 2 + 1] = palette["SPACE"]
 
     # 5. overlay the solution path steps
-    if path_steps:
+    if path_steps and show_path:
         curr_x, curr_y = maze.entry
         for move in path_steps:
             if move == 'N':
